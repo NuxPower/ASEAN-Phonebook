@@ -1,3 +1,4 @@
+# Main Python File to run from
 from ContactArray import ContactList
 from Contact import Contact
 
@@ -193,6 +194,7 @@ if __name__ == "__main__":
                     number = int(input("Enter number: "))
                 except ValueError:
                     print("Invalid input. Please enter numeric values for area code and number.")
+                    continue
 
                 contact = Contact(stdn, fname, lname, occupation, gender, cc, area, number)
                 pb.insert(contact)
