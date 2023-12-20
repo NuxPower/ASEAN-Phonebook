@@ -125,22 +125,96 @@ def convertChoices(choices: list) -> list:
     return choices
                 
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     pb = ContactList()
+
     while True:
         showMenu("main")
-        opt = int(input("Select Operation: "))
+        try:
+            opt = int(input("Select Operation: "))
+        except ValueError:
+            print("Invalid input. Please enter a valid integer.")
+            continue
+
         if opt == 1:
-            # Store to ASEAN Phonebook
-            contact = receiveContactInfo()
-            pb.insert(contact)
+            while True:
+                try:
+                    stdn = int(input("Enter student number: "))
+                except ValueError:
+                    print("Invalid input. Please enter a valid integer.")
+                    continue
+
+                lname = input("Enter surname: ")
+                lname_invalid = False
+                for char in lname:
+                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
+                        lname_invalid = True
+                        break
+                if lname_invalid:
+                    print("Invalid input. Last name should not contain numbers.")
+                    continue
+
+                fname = input("Enter first name: ")
+                fname_invalid = False
+                for char in fname:
+                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
+                        fname_invalid = True
+                        break
+                if fname_invalid:
+                    print("Invalid input. First name should not contain numbers.")
+                    continue
+
+                occupation = input("Enter occupation: ")
+                occupation_invalid = False
+                for char in occupation:
+                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
+                        occupation_invalid = True
+                        break
+                if occupation_invalid:
+                    print("Invalid input. Occupation should not contain numbers.")
+                    continue
+
+                gender = input("Enter gender (M for male, F for female): ")
+                if not (gender.upper() == 'M' or gender.upper() == 'F'):
+                    print("Invalid input. Please enter 'M' for male or 'F' for female.")
+                    continue
+
+                try:
+                    cc = int(input("Enter country code: "))
+                    area = int(input("Enter area code: "))
+                    number = int(input("Enter number: "))
+                except ValueError:
+                    print("Invalid input. Please enter numeric values for country code, area code, and number.")
+                    continue
+
+                contact = Contact(stdn, fname, lname, occupation, gender, cc, area, number)
+                pb.insert(contact)
+
+                add_new_entry = input("Contact added successfully! Do you want to add a new entry? (yes/no): ").lower()
+                if add_new_entry == "yes":
+                    print("Add a new Entry")
+                    # Continue with the loop, prompting for a new entry
+                elif add_new_entry == "no":
+                    # Break out of the loop and go back to the main menu
+                    break
+                else:
+                    print("Invalid input. Please enter 'yes' or 'no'.")
+
+
         elif opt == 2:
             # Edit entry in ASEAN Phonebook
-            if pb.size == 0:
-                print("Phonebook is empty. Add a contact first.")
-            else:
+            while True:
+                if pb.size == 0:
+                    print("Phonebook is empty. Add a contact first.")
+                    break  # Break out of the edit loop and go back to the main menu
+
                 showMenu("edit")
                 edit_opt = int(input("Select Edit Operation: "))
+
+                if edit_opt == 8:
+                    print("Going back to the main menu.")
+                    break  # Break out of the edit loop and go back to the main menu
+
                 stdn = input("Enter student number to edit: ")
                 
                 # Find the contact
@@ -179,14 +253,16 @@ if __name__ == "__main__":
                     # Edit number
                     new_number = int(input("Enter new number: "))
                     contact.setContactNumber(new_number)
+                # ... (other edit options)
                 elif edit_opt == 8:
                     print("Going back to the main menu.")
-                    # No need to edit anything, just break out of the edit loop
-                    break
+                    break  # Break out of the edit loop and go back to the main menu
                 else:
                     print("Invalid option.")
 
                 print("Edited contact:", contact)
+
+
 
         elif opt == 3:
             # Delete entry from ASEAN Phonebook
