@@ -1,4 +1,3 @@
-# Main Python File to run from
 from ContactArray import ContactList
 from Contact import Contact
 
@@ -175,9 +174,16 @@ if __name__ == "__main__":
                     continue
 
                 gender = input("Enter gender (M for male, F for female): ")
-                if gender.upper() not in {'M', 'F'}:
-                    print("Invalid input. Please enter 'M' for male or 'F' for female.")
+                if gender =='f':
+                    gender ='F'
+                elif gender =='m':
+                    gender = 'M'
+                else:
+                    print("Invalid input. There are only 2 genders.")
                     continue
+                # if gender.upper() not in {'M', 'F'}:
+                #     print("Invalid input. Please enter 'M' for male or 'F' for female.")
+                #     continue
 
 
                 while True:
@@ -220,6 +226,9 @@ if __name__ == "__main__":
                     showMenu("edit")
                     try:
                         edit_opt = int(input("Select Edit Operation: "))
+                        if edit_opt not in range(1, 9):
+                            print("Invalid option. Please select a number between 1 and 8.")
+                            continue
                     except ValueError:
                         print("Invalid input. Please enter a valid integer.")
                         continue
@@ -227,7 +236,6 @@ if __name__ == "__main__":
                     if edit_opt == 8:
                         print("Going back to the main menu.")
                         break  # Break out of the loop and go back to the main menu
-
 
                     stdn = input("Enter student number to edit: ")
 
@@ -244,13 +252,13 @@ if __name__ == "__main__":
                         new_lname = input("Enter new last name: ")
                         contact.setLName(new_lname)
                     elif edit_opt == 3:
-                        # Edit occupation
-                        new_occupation = input("Enter new occupation: ")
-                        contact.setOccupation(new_occupation)
-                    elif edit_opt == 4:
-                        # Edit gender
+                        # NEED FOR IMPROVEMENT
                         new_gender = input("Enter new gender: ")
                         contact.setGender(new_gender)
+                    elif edit_opt == 4:
+                        # Edit gender
+                        new_occupation = input("Enter new occupation: ")
+                        contact.setOccupation(new_occupation)
                     elif edit_opt == 5:
                         # Edit country code
                         new_cc = int(input("Enter new country code: "))
@@ -267,6 +275,7 @@ if __name__ == "__main__":
                         print("Invalid option.")
 
                     print("Edited contact:", contact)
+
 
         elif opt == 3:
             # Delete entry from ASEAN Phonebook
