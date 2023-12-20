@@ -1,4 +1,3 @@
-# Main Python File to run from
 from ContactArray import ContactList
 from Contact import Contact
 
@@ -145,24 +144,40 @@ if __name__ == "__main__":
                     continue
 
                 lname = input("Enter surname: ")
-                if any(not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t') for char in lname):
+                lname_invalid = False
+                for char in lname:
+                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
+                        lname_invalid = True
+                        break
+                if lname_invalid:
                     print("Invalid input. Last name should not contain numbers.")
                     continue
 
                 fname = input("Enter first name: ")
-                if any(not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t') for char in fname):
+                fname_invalid = False
+                for char in fname:
+                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
+                        fname_invalid = True
+                        break
+                if fname_invalid:
                     print("Invalid input. First name should not contain numbers.")
                     continue
 
                 occupation = input("Enter occupation: ")
-                if any(not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t') for char in occupation):
+                occupation_invalid = False
+                for char in occupation:
+                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
+                        occupation_invalid = True
+                        break
+                if occupation_invalid:
                     print("Invalid input. Occupation should not contain numbers.")
                     continue
 
                 gender = input("Enter gender (M for male, F for female): ")
-                if not (gender == 'M' or gender == 'm' or gender == 'F' or gender == 'f'):
+                if gender.upper() not in {'M', 'F'}:
                     print("Invalid input. Please enter 'M' for male or 'F' for female.")
                     continue
+
 
                 while True:
                     try:
@@ -260,32 +275,33 @@ if __name__ == "__main__":
             else:
                 print("Contact not found.")
 
-
-        # ... (previous code)
-
         elif opt == 4:
             # View/Search ASEAN Phonebook
             showMenu("views")
             view_opt = int(input("Select View Operation: "))
+
             if view_opt == 1:
                 # Search by country
                 showMenu("cc")
-                cc_opt = int(input("Select Country Code: "))
-                cc_opt = convertChoices([cc_opt])[0]
+                start_cc_opt = int(input("Select Start Country Code: "))
+                end_cc_opt = int(input("Select End Country Code: "))
+                start_cc_opt, end_cc_opt = convertChoices([start_cc_opt, end_cc_opt])
 
-                filtered_contacts = [contact for contact in pb.phonebook if contact and contact.getNumericCountryCode() == cc_opt]
-
-                if cc_opt == 12:
+                if start_cc_opt == 12:
                     # View all
                     if pb.size == 0:
                         print("Phonebook is empty.")
                     else:
                         print(pb)
-                elif len(filtered_contacts) == 0:
-                    print("No contacts found for the selected country.")
                 else:
-                    for contact in filtered_contacts:
-                        print(contact)
+                    filtered_contacts = [contact for contact in pb.phonebook if contact and start_cc_opt <= contact.getNumericCountryCode() <= end_cc_opt]
+
+                    if len(filtered_contacts) == 0:
+                        print("No contacts found for the selected countries.")
+                    else:
+                        print("Here are the students from the selected countries: ")
+                        for contact in filtered_contacts:
+                            print(contact)
             elif view_opt == 2:
                 # Search by surname
                 surname = input("Enter surname to search: ")
@@ -301,7 +317,13 @@ if __name__ == "__main__":
                 else:
                     print(pb)
             elif view_opt == 4:
-                # Go back to main menu
+                # Go back to the main menu
                 pass
             else:
                 print("Invalid option.")
+
+        elif opt == 5:
+            # Exit
+            break
+        else:
+            print("Invalid option.")
