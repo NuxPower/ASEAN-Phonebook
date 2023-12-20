@@ -125,7 +125,7 @@ def convertChoices(choices: list) -> list:
     return choices
                 
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     pb = ContactList()
 
     while True:
@@ -145,124 +145,111 @@ if _name_ == "_main_":
                     continue
 
                 lname = input("Enter surname: ")
-                lname_invalid = False
-                for char in lname:
-                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
-                        lname_invalid = True
-                        break
-                if lname_invalid:
+                if any(not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t') for char in lname):
                     print("Invalid input. Last name should not contain numbers.")
                     continue
 
                 fname = input("Enter first name: ")
-                fname_invalid = False
-                for char in fname:
-                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
-                        fname_invalid = True
-                        break
-                if fname_invalid:
+                if any(not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t') for char in fname):
                     print("Invalid input. First name should not contain numbers.")
                     continue
 
                 occupation = input("Enter occupation: ")
-                occupation_invalid = False
-                for char in occupation:
-                    if not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t'):
-                        occupation_invalid = True
-                        break
-                if occupation_invalid:
+                if any(not ('a' <= char <= 'z' or 'A' <= char <= 'Z' or char == ' ' or char == '\t') for char in occupation):
                     print("Invalid input. Occupation should not contain numbers.")
                     continue
 
                 gender = input("Enter gender (M for male, F for female): ")
-                if not (gender.upper() == 'M' or gender.upper() == 'F'):
+                if not (gender == 'M' or gender == 'm' or gender == 'F' or gender == 'f'):
                     print("Invalid input. Please enter 'M' for male or 'F' for female.")
                     continue
 
+                while True:
+                    try:
+                        cc = int(input("Enter country code: "))
+                        if cc in [856, 855, 66, 84, 60, 63, 62, 670, 95, 673, 65]:
+                            break
+                        else:
+                            print("Invalid country code. Please enter a valid ASEAN country code.")
+                    except ValueError:
+                        print("Invalid input. Please enter a numeric value for the country code.")
                 try:
-                    cc = int(input("Enter country code: "))
                     area = int(input("Enter area code: "))
                     number = int(input("Enter number: "))
                 except ValueError:
-                    print("Invalid input. Please enter numeric values for country code, area code, and number.")
-                    continue
+                    print("Invalid input. Please enter numeric values for area code and number.")
 
                 contact = Contact(stdn, fname, lname, occupation, gender, cc, area, number)
                 pb.insert(contact)
-
+                
                 add_new_entry = input("Contact added successfully! Do you want to add a new entry? (yes/no): ").lower()
+                while add_new_entry not in ['yes', 'no']:
+                    print("Invalid input. Please enter 'yes' or 'no'.")
+                    add_new_entry = input("Do you want to add a new entry? (yes/no): ").lower()
+
                 if add_new_entry == "yes":
                     print("Add a new Entry")
                     # Continue with the loop, prompting for a new entry
                 elif add_new_entry == "no":
                     # Break out of the loop and go back to the main menu
                     break
-                else:
-                    print("Invalid input. Please enter 'yes' or 'no'.")
-
 
         elif opt == 2:
             # Edit entry in ASEAN Phonebook
-            while True:
-                if pb.size == 0:
-                    print("Phonebook is empty. Add a contact first.")
-                    break  # Break out of the edit loop and go back to the main menu
+            if pb.size == 0:
+                print("Phonebook is empty. Add a contact first.")
+            else:
+                while True:
+                    showMenu("edit")
+                    try:
+                        edit_opt = int(input("Select Edit Operation: "))
+                    except ValueError:
+                        print("Invalid input. Please enter a valid integer.")
+                        continue
 
-                showMenu("edit")
-                edit_opt = int(input("Select Edit Operation: "))
-
-                if edit_opt == 8:
-                    print("Going back to the main menu.")
-                    break  # Break out of the edit loop and go back to the main menu
-
-                stdn = input("Enter student number to edit: ")
-                
-                # Find the contact
-                contact = pb.getContact(stdn)
-
-                # If contact is not found, print a message and continue to the next iteration
-                if contact is None:
-                    print("Contact not found.")
-                    continue
-
-                if edit_opt == 1:
-                    # Edit student number
-                    new_stdn = input("Enter new student number: ")
-                    contact.setStudentNumber(new_stdn)
-                elif edit_opt == 2:
-                    # Edit surname
-                    new_lname = input("Enter new surname: ")
-                    contact.setLName(new_lname)
-                elif edit_opt == 3:
-                    # Edit occupation
-                    new_occupation = input("Enter new occupation: ")
-                    contact.setOccupation(new_occupation)
-                elif edit_opt == 4:
-                    # Edit gender
-                    new_gender = input("Enter new gender: ")
-                    contact.setGender(new_gender)
-                elif edit_opt == 5:
-                    # Edit country code
-                    new_cc = int(input("Enter new country code: "))
-                    contact.setCountryCode(new_cc)
-                elif edit_opt == 6:
-                    # Edit area code
-                    new_area = int(input("Enter new area code: "))
-                    contact.setAreaCode(new_area)
-                elif edit_opt == 7:
-                    # Edit number
-                    new_number = int(input("Enter new number: "))
-                    contact.setContactNumber(new_number)
-                # ... (other edit options)
-                elif edit_opt == 8:
-                    print("Going back to the main menu.")
-                    break  # Break out of the edit loop and go back to the main menu
-                else:
-                    print("Invalid option.")
-
-                print("Edited contact:", contact)
+                    if edit_opt == 8:
+                        print("Going back to the main menu.")
+                        break  # Break out of the loop and go back to the main menu
 
 
+                    stdn = input("Enter student number to edit: ")
+
+                    # If contact is not found, print a message and continue to the next iteration
+                    if contact is None:
+                        print("Contact not found.")
+                        continue
+
+                    if edit_opt == 1:
+                        # Edit student number
+                        new_stdn = input("Enter new student number: ")
+                        contact.setStudentNumber(new_stdn)
+                    elif edit_opt == 2:
+                        new_lname = input("Enter new last name: ")
+                        contact.setLName(new_lname)
+                    elif edit_opt == 3:
+                        # Edit occupation
+                        new_occupation = input("Enter new occupation: ")
+                        contact.setOccupation(new_occupation)
+                    elif edit_opt == 4:
+                        # Edit gender
+                        new_gender = input("Enter new gender: ")
+                        contact.setGender(new_gender)
+                    elif edit_opt == 5:
+                        # Edit country code
+                        new_cc = int(input("Enter new country code: "))
+                        contact.setCountryCode(new_cc)
+                    elif edit_opt == 6:
+                        # Edit area code
+                        new_area = int(input("Enter new area code: "))
+                        contact.setAreaCode(new_area)
+                    elif edit_opt == 7:
+                        # Edit number
+                        new_number = int(input("Enter new number: "))
+                        contact.setContactNumber(new_number)
+                    else:
+                        print("Invalid option.")
+
+                    print("Edited contact:", contact)
 
         elif opt == 3:
             # Delete entry from ASEAN Phonebook
@@ -272,6 +259,10 @@ if _name_ == "_main_":
                 print("Deleted contact:", deleted_contact)
             else:
                 print("Contact not found.")
+
+
+        # ... (previous code)
+
         elif opt == 4:
             # View/Search ASEAN Phonebook
             showMenu("views")
@@ -280,13 +271,19 @@ if _name_ == "_main_":
                 # Search by country
                 showMenu("cc")
                 cc_opt = int(input("Select Country Code: "))
+                cc_opt = convertChoices([cc_opt])[0]
+
+                filtered_contacts = [contact for contact in pb.phonebook if contact and contact.getNumericCountryCode() == cc_opt]
+
                 if cc_opt == 12:
                     # View all
-                    print(pb)
+                    if pb.size == 0:
+                        print("Phonebook is empty.")
+                    else:
+                        print(pb)
+                elif len(filtered_contacts) == 0:
+                    print("No contacts found for the selected country.")
                 else:
-                    # View by country
-                    cc_opt = convertChoices([cc_opt])[0]
-                    filtered_contacts = [contact for contact in pb.phonebook if contact and contact.getNumericCountryCode() == cc_opt]
                     for contact in filtered_contacts:
                         print(contact)
             elif view_opt == 2:
@@ -299,15 +296,12 @@ if _name_ == "_main_":
                     print("Contact not found.")
             elif view_opt == 3:
                 # View all
-                print(pb)
+                if pb.size == 0:
+                    print("Phonebook is empty.")
+                else:
+                    print(pb)
             elif view_opt == 4:
                 # Go back to main menu
                 pass
             else:
                 print("Invalid option.")
-        elif opt == 5:
-            # Exit
-            print("Exiting program. Goodbye!")
-            break
-        else:
-            print("Invalid option.")
