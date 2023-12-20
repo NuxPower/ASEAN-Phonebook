@@ -217,28 +217,34 @@ class Contact:
     @staticmethod
     def compareNames(c1: 'Contact', c2: 'Contact', comparison_type: int = 0) -> int:
         """Compares the names of two different contacts. 
-        
+            
         Args:
             c1 (Contact): Contact 1
             c2 (Contact): Contact 2
             comparison_type (int): 0 to compare last names. 1 to compare first names. Defaults to 0.
- 
+    
         Returns:
             int: 1 if name value of c1 > c2.
-            0 if both contacts have same name value.
+            0 if both contacts have the same name value.
             -1 if name value of c1 < c2.
         """
-        # Complete this method
         # Use the comparison_type value
-  
         if comparison_type == 0:
+            # Compare last names first
             if c1.getLName() > c2.getLName():
                 return 1
             elif c1.getLName() < c2.getLName():
                 return -1
             else:
-                return 0 
+                # If last names are the same, compare first names
+                if c1.getFName() > c2.getFName():
+                    return 1
+                elif c1.getFName() < c2.getFName():
+                    return -1
+                else:
+                    return 0 
         elif comparison_type == 1:
+            # Compare first names only
             if c1.getFName() > c2.getFName():
                 return 1
             elif c1.getFName() < c2.getFName():
@@ -247,8 +253,7 @@ class Contact:
                 return 0 
         else:
             print("Invalid comparison_type. Use 0 for last names, and 1 for first names.")
-            return 0  
-         
+            return 0     
     def __str__(self) -> str:
         """Returns a string representation of this contact."""
         return "{}, {}, with student number {}, is a/an {}. {} phone number is {}.".format(
