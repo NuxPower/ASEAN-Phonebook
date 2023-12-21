@@ -214,11 +214,9 @@ if __name__ == "__main__":
                     print("Add a new Entry")
                     # Continue with the loop, prompting for a new entry
                 elif add_new_entry == "no":
-                    # Break out of the loop and go back to the main menu
                     break
 
         elif opt == 2:
-            # Edit entry in ASEAN Phonebook
             if pb.size == 0:
                 print("Phonebook is empty. Add a contact first.")
             else:
@@ -235,14 +233,16 @@ if __name__ == "__main__":
 
                     if edit_opt == 8:
                         print("Going back to the main menu.")
-                        break  # Break out of the loop and go back to the main menu
+                        break  
 
                     stdn = input("Enter student number to edit: ")
 
-                    # If contact is not found, print a message and continue to the next iteration
+                    contact = pb.getContact(stdn)
+
                     if contact is None:
                         print("Contact not found.")
                         continue
+
 
                     if edit_opt == 1:
                         # Edit student number
@@ -276,65 +276,94 @@ if __name__ == "__main__":
 
                     print("Edited contact:", contact)
 
-
         elif opt == 3:
-            # Delete entry from ASEAN Phonebook
-            stdn = input("Enter student number to delete: ")
-            deleted_contact = pb.deleteContact(stdn)
-            if deleted_contact:
-                print("Deleted contact:", deleted_contact)
+            if pb.size == 0:
+                print("Phonebook is empty. Add a contact first.")
             else:
-                print("Contact not found.")
+                stdn = input("Enter student number to delete: ")
+                try:
+                    stdn = int(stdn)
+                except ValueError:
+                    print("Invalid input. Please enter a numeric student number.")
+                    continue 
+
+                deleted_contact = pb.deleteContact(stdn)
+
+                if deleted_contact:
+                    print("Deleted contact:", deleted_contact)
+                else:
+                    print("Contact not found.")
+
 
         elif opt == 4:
-            # View/Search ASEAN Phonebook
-            showMenu("views")
-            view_opt = int(input("Select View Operation: "))
-            if view_opt == 1:
-                # Search by country
-                showMenu("cc")
-                start_cc_opt = int(input("Select Start Country Code: "))
-                end_cc_opt = int(input("Select End Country Code: "))
-                start_cc_opt, end_cc_opt = convertChoices([start_cc_opt, end_cc_opt])
-
-                if start_cc_opt == 12:
-                    # View all
-                    if pb.size == 0:
-                        print("Phonebook is empty.")
-                    else:
-                        print(pb)
-                else:
-                    filtered_contacts = [contact for contact in pb.phonebook if contact and start_cc_opt <= contact.getNumericCountryCode() <= end_cc_opt]
-
-                    if len(filtered_contacts) == 0:
-                        print("No contacts found for the selected countries.")
-                    else:
-                        print("Here are the students from the selected countries: ")
-                        for contact in filtered_contacts:
-                            print(contact)
-
-            elif view_opt == 2:
-                # Search by surname
-                surname = input("Enter surname to search: ")
-                matching_contacts = pb.getContactsBySurname(surname)
-
-                if matching_contacts:
-                    print("Contacts with the surname '{}':".format(surname))
-                    for contact in matching_contacts:
-                        print(contact)
-                else:
-                    print("No contacts found with the surname '{}'.".format(surname))
-
-            elif view_opt == 3:
-                # View all
-                print(pb)
-            elif view_opt == 4:
-                # Go back to main menu
-                pass
+            if pb.size == 0:
+                print("Phonebook is empty. Add a contact first.")
             else:
-                print("Invalid option.")
+                showMenu("views")
+                view_opt = int(input("Select View Operation: "))
+                if view_opt == 1:
+                    while True:
 
-                
+                        if view_opt == 1:
+                            # Search by country
+                            selected_countries = []
+
+                            while True:
+                                print("From which country?:")
+                                showMenu("cc", inline=3)
+                                cc_opt = int(input("Enter choice (0 to exit): "))
+
+                                if cc_opt == 0 or len(selected_countries) >= 2:
+                                    break  # Exit the loop when 0 is selected or 2 countries are selected
+                                elif 1 <= cc_opt <= 12:
+                                    selected_countries.append(cc_opt)
+                                else:
+                                    print("Invalid choice. Please try again.")
+
+                            if not selected_countries:
+                                print("No countries selected. Going back to the main menu.")
+                            else:
+                                selected_countries = convertChoices(selected_countries)
+                                def sort_key(contact):
+                                    return contact.getLName(), contact.getFName()
+
+                                # Directly access the phonebook attribute to get contacts
+                                filtered_contacts = [contact for contact in pb.phonebook if contact and contact.getNumericCountryCode() in selected_countries]
+
+                                if not filtered_contacts:
+                                    print("No contacts found for the selected countries.")
+                                else:
+                                    filtered_contacts.sort(key=sort_key)
+                                    print(f"\nHere are the students from the selected countries:\n")
+                                    for contact in filtered_contacts:
+                                        print(contact)
+
+                                # After printing the student entries, go back to the "search menu."
+                                print("\nGoing back to the search menu.")
+                                break
+
+
+                elif view_opt == 2:
+                    # Search by surname
+                    surname = input("Enter surname to search: ")
+                    matching_contacts = pb.getContactsBySurname(surname)
+
+                    if matching_contacts:
+                        print("Contacts with the surname '{}':".format(surname))
+                        for contact in matching_contacts:
+                            print(contact)
+                    else:
+                        print("No contacts found with the surname '{}'.".format(surname))
+
+                elif view_opt == 3:
+                    # View all
+                    print(pb)
+                elif view_opt == 4:
+                    # Go back to main menu
+                    pass
+                else:
+                    print("Invalid option.")
+
         elif opt == 5:
             # Exit
             break
