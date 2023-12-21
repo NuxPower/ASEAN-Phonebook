@@ -290,7 +290,6 @@ if __name__ == "__main__":
             # View/Search ASEAN Phonebook
             showMenu("views")
             view_opt = int(input("Select View Operation: "))
-
             if view_opt == 1:
                 # Search by country
                 showMenu("cc")
@@ -313,26 +312,29 @@ if __name__ == "__main__":
                         print("Here are the students from the selected countries: ")
                         for contact in filtered_contacts:
                             print(contact)
+
             elif view_opt == 2:
                 # Search by surname
                 surname = input("Enter surname to search: ")
-                contact = pb.getContactBySurname(surname)
-                if contact:
-                    print(contact)
+                matching_contacts = pb.getContactsBySurname(surname)
+
+                if matching_contacts:
+                    print("Contacts with the surname '{}':".format(surname))
+                    for contact in matching_contacts:
+                        print(contact)
                 else:
-                    print("Contact not found.")
+                    print("No contacts found with the surname '{}'.".format(surname))
+
             elif view_opt == 3:
                 # View all
-                if pb.size == 0:
-                    print("Phonebook is empty.")
-                else:
-                    print(pb)
+                print(pb)
             elif view_opt == 4:
-                # Go back to the main menu
+                # Go back to main menu
                 pass
             else:
                 print("Invalid option.")
 
+                
         elif opt == 5:
             # Exit
             break
