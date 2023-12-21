@@ -53,14 +53,11 @@ class ContactList:
             Contact: Contact at index.
         """
         # Complete this Method
-        if self.size == 0:
-            return None
-        else:
+        if 0 <= index < self.getSize():
             return self.phonebook[index]
-        # if 0 <= index < self.getSize():
-        #     return self.phonebook[index]
-        # else:
-        #     return None
+        else:
+            return None
+
 
 
     
@@ -227,6 +224,7 @@ class ContactList:
                 deleted_contact = self.phonebook[i]
                 self.__adjustPhonebook(i, self.size - 1, dir="b")  # Change 'f' to 'b' for backward adjustment
                 self.decrSize()
+                self.phonebook[self.getSize()] = None
                 return deleted_contact
             i += 1
 
@@ -255,4 +253,3 @@ class ContactList:
             s += "\nThis phonebook is currently empty..."
         s += "\n<----End---->"
         return s
-
